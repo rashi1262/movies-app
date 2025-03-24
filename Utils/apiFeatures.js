@@ -7,7 +7,7 @@ class APIFeatures {
   filter() {
     const queryObj = { ...this.queryString };
 
-    const excludedFeilds = ["limit", "page", "sort"];
+    const excludedFeilds = ["limit", "page", "sort", "search"];
 
     excludedFeilds.forEach((el) => delete queryObj[el]);
 
@@ -25,7 +25,6 @@ class APIFeatures {
   }
 
   sort() {
-    console.log("sort", this.queryString);
     if (this.queryString.sort) {
       const sortBy = this.queryString.sort.split(",").join(" ");
       this.query = this.query.sort(sortBy);
@@ -38,6 +37,28 @@ class APIFeatures {
     const limit = this.queryString.limit * 1 || 100;
     const skip = (page - 1) * limit;
     this.query = this.query.skip(skip).limit(limit);
+    return this;
+  }
+
+  search() {
+    if (this.queryString.search) {
+      const searchTerm = this.queryString.search.trim();
+      if (!isNaN(searchTerm)) {
+        this.query = this.query.find({
+          $or: [
+            { vote_average: Number(searchTerm) }, // Exact Match for number
+          ],
+        });
+      } else {
+        this.query = this.query.find({
+          $or: [
+            { title: { $regex: searchTerm, $options: "i" } }, // Case-insensitive
+            { overview: { $regex: searchTerm, $options: "i" } },
+            { vote_average: { $regex: searchTerm, $options: "i" } },
+          ],
+        });
+      }
+    }
     return this;
   }
 }

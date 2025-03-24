@@ -17,6 +17,7 @@ exports.createMovie = async function (req, res, next) {
 exports.getAllMovies = async function (req, res, next) {
   try {
     const features = new APIFeatures(Movie.find(), req.query)
+      .search()
       .filter()
       .sort()
       .paginate();
