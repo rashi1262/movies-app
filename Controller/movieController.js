@@ -1,5 +1,5 @@
 const Movie = require("../Model/movieModel");
-const AppError = require("../utils/AppError");
+const AppError = require("../Utils/AppError");
 
 exports.createMovie = async function (req, res, next) {
   try {
