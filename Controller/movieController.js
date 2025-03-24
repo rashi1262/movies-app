@@ -1,5 +1,6 @@
 const Movie = require("../Model/movieModel");
 const AppError = require("../Utils/AppError");
+const APIFeatures = require("../Utils/apiFeatures");
 
 exports.createMovie = async function (req, res, next) {
   try {
@@ -15,21 +16,11 @@ exports.createMovie = async function (req, res, next) {
 
 exports.getAllMovies = async function (req, res, next) {
   try {
-    let queryObj = { ...req.query };
-
-    // const excludedFeilds = ["page", "sort", "limit", "feilds"];
-
-    // excludedFeilds.forEach((el) => delete query[el]);
-
-    if ("vote_average" in queryObj) {
-      queryObj.vote_average = { gte: queryObj.vote_average };
-    }
-
-    let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/, (match) => `$${match}`);
-    console.log(JSON.parse(queryStr));
-    const query = Movie.find(JSON.parse(queryStr));
-    const movies = await query;
+    const features = new APIFeatures(Movie.find(), req.query)
+      .filter()
+      .sort()
+      .paginate();
+    const movies = await features.query;
     res.status(200).json({
       status: "success",
       totalMovies: movies.length,
