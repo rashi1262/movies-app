@@ -17,7 +17,10 @@ class APIFeatures {
     if ("vote_count" in queryObj) {
       queryObj.vote_count = { gte: queryObj.vote_count };
     }
-
+    if ("genres" in queryObj) {
+      queryObj["genres.name"] = queryObj.genres;
+      delete queryObj.genres;
+    }
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
     this.query = this.query.find(JSON.parse(queryStr));
@@ -54,7 +57,7 @@ class APIFeatures {
           $or: [
             { title: { $regex: searchTerm, $options: "i" } }, // Case-insensitive
             { overview: { $regex: searchTerm, $options: "i" } },
-            { vote_average: { $regex: searchTerm, $options: "i" } },
+            { "genres.name": { $regex: searchTerm, $options: "i" } },
           ],
         });
       }
