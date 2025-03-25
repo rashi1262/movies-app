@@ -54,7 +54,6 @@ class APIFeatures {
           $or: [
             { title: { $regex: searchTerm, $options: "i" } }, // Case-insensitive
             { overview: { $regex: searchTerm, $options: "i" } },
-            { vote_average: { $regex: searchTerm, $options: "i" } },
           ],
         });
       }
