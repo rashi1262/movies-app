@@ -9,13 +9,17 @@ const userRoutes = require("./Routes/userRoutes");
 const movieRoutes = require("./Routes/movieRoutes");
 const wishlistRoutes = require("./Routes/wishListRoutes");
 
-const corsOptions = {
-  origin: "http://localhost:5173",
-  methods: "GET,POST,PUT,DELETE,OPTIONS,PATCH",
-  credentials: true,
-};
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Change to your frontend URL
+    methods: "GET,POST,PUT,DELETE,OPTIONS",
+    allowedHeaders: "Content-Type,Authorization",
+    credentials: true,
+  })
+);
 
-app.use(cors(corsOptions));
+app.options("*", cors());
+
 app.use(cookieParser());
 app.use(express.json());
 
