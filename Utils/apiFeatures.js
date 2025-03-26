@@ -7,7 +7,15 @@ class APIFeatures {
   filter() {
     const queryObj = { ...this.queryString };
 
-    const excludedFeilds = ["limit", "page", "sort", "search"];
+    const excludedFeilds = [
+      "limit",
+      "page",
+      "sort",
+      "search",
+      "popular",
+      "tags",
+      "similar",
+    ];
 
     excludedFeilds.forEach((el) => delete queryObj[el]);
 
@@ -61,6 +69,15 @@ class APIFeatures {
           ],
         });
       }
+    }
+    return this;
+  }
+
+  similarMovies() {
+    if (this.queryString.similar) {
+      this.query = this.query.find({
+        "genres.name": { $all: this.queryString.tags },
+      });
     }
     return this;
   }

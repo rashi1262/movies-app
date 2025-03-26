@@ -41,10 +41,26 @@ exports.getMovie = async function (req, res, next) {
     if (!movie) {
       return next(new AppError("Invalid Id or Movie doesn't exist.", 404));
     }
-    res.status(200).json({
-      status: "success",
-      message: movie,
-    });
+    if (req.query.similar) {
+      const tags = movie.genres.map((el) => el.name);
+      req.query.tags = tags;
+      const features = new APIFeatures(Movie.find(), req.query)
+        .similarMovies()
+        .sort()
+        .paginate();
+      const similar = await features.query;
+      res.status(200).json({
+        status: "success",
+        similarMoviesLength: similar.length,
+        similarMovies: similar,
+        message: movie,
+      });
+    } else {
+      res.status(200).json({
+        status: "success",
+        message: movie,
+      });
+    }
   } catch (err) {
     return next(new AppError(err.message, 403));
   }
@@ -80,6 +96,100 @@ exports.deleteMovie = async function (req, res, next) {
     });
   } catch (err) {
     return next(new AppError(err.message, 403));
+  }
+};
+
+exports.popularMovies = async function (req, res, next) {
+  try {
+    const movies = await Movie.aggregate([
+      {
+        $match: { vote_average: { $gte: 10 } },
+      },
+      {
+        $sort: { popularity: -1 },
+      },
+      {
+        $limit: 10,
+      },
+    ]);
+
+    if (!movies) {
+      return next(new AppError("Movie not available.", 404));
+    }
+    res.status(200).json({
+      status: "success",
+      totalMovies: movies.length,
+      message: movies,
+    });
+  } catch (err) {
+    return next(new AppError(err.message, 400));
+  }
+};
+exports.trendingMovies = async function (req, res, next) {
+  try {
+    const movies = await Movie.aggregate([
+      {
+        $match: { vote_average: { $gte: 10 } },
+      },
+      {
+        $sort: { release_date: -1 },
+      },
+      {
+        $limit: 10,
+      },
+    ]);
+
+    if (!movies) {
+      return next(new AppError("Movie not available.", 404));
+    }
+    res.status(200).json({
+      status: "success",
+      totalMovies: movies.length,
+      message: movies,
+    });
+  } catch (err) {
+    return next(new AppError(err.message, 400));
+  }
+};
+
+exports.upcomingMovies = async function (req, res, next) {
+  const today = new Date();
+  let result1, result2;
+  let limits;
+  let movies;
+  try {
+    result1 = await Movie.find({
+      release_date: {
+        $gte: new Date(),
+      },
+    })
+      .sort({ release_date: -1 })
+      .limit(10);
+    if (result1.length < 10) {
+      limits = limits != 0 ? 10 - result1.length : 10;
+      result2 = await Movie.find({
+        release_date: {
+          $lte: new Date(),
+          $gte: new Date(today.getFullYear(), today.getMonth() - 1, 1),
+        },
+      })
+        .sort({ release_date: -1 })
+        .limit(limits);
+      movies = [...result1, ...result2];
+    } else {
+      movies = result1;
+    }
+
+    if (!movies) {
+      return next(new AppError("Movies not available.", 404));
+    }
+    res.status(200).json({
+      status: "success",
+      totalMovies: movies.length,
+      message: movies,
+    });
+  } catch (err) {
+    return next(new AppError(err.message, 400));
   }
 };
 
