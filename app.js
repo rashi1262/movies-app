@@ -7,13 +7,21 @@ const cookieParser = require("cookie-parser");
 
 const userRoutes = require("./Routes/userRoutes");
 const movieRoutes = require("./Routes/movieRoutes");
+const wishlistRoutes = require("./Routes/wishListRoutes");
 
-app.use(cors());
+const corsOptions = {
+  origin: "http://localhost:5173",
+  methods: "GET,POST,PUT,DELETE,OPTIONS,PATCH",
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", movieRoutes);
+app.use("/api/v1", wishlistRoutes);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

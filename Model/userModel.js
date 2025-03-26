@@ -72,6 +72,16 @@ const userSchema = new mongoose.Schema(
         type: String,
       },
     },
+    wishlist: {
+      type: [String],
+      validate: {
+        validator: function (value) {
+          // Check for duplicate values in the array
+          return value.length === new Set(value).size;
+        },
+        message: "Movie is already in wishlist.",
+      },
+    },
   },
   { timestamps: true }
 );
