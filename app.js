@@ -11,15 +11,14 @@ const wishlistRoutes = require("./Routes/wishListRoutes");
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // Change to your frontend URL
-    methods: "GET,POST,PUT,DELETE,OPTIONS",
+    origin: ["http://localhost:5173", "https://vmoviescom.netlify.app"],
+    methods: "GET,POST,PUT,DELETE,OPTIONS,PATCH",
     allowedHeaders: "Content-Type,Authorization",
     credentials: true,
   })
 );
 
 app.options("*", cors());
-
 app.use(cookieParser());
 app.use(express.json());
 
