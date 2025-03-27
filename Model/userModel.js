@@ -8,7 +8,6 @@ const userSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      unique: [true, "Phone number already exsist."],
     },
     channel: {
       type: String,
