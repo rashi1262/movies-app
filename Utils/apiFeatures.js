@@ -36,9 +36,31 @@ class APIFeatures {
   }
 
   sort() {
-    if (this.queryString.sort) {
+    if (
+      this.queryString.sort &&
+      this.queryString.sort !== " " &&
+      this.queryString.sort !== " "
+    ) {
       const sortBy = this.queryString.sort.split(",").join(" ");
-      this.query = this.query.sort(`-${sortBy}`);
+      this.query = this.query.sort(`${sortBy}`);
+    }
+    return this;
+  }
+
+  sortMovies() {
+    if (this.queryString.sort) {
+      const sortBy = this.queryString.sort;
+      if (
+        sortBy === "vote_average" ||
+        sortBy === "popularity" ||
+        sortBy === "vote_count" ||
+        sortBy === "-vote_average" ||
+        sortBy === "-popularity" ||
+        sortBy === "-vote_count"
+      ) {
+        console.log("enter");
+        this.query = this.query.sort(`${sortBy}`);
+      }
     }
     return this;
   }
@@ -52,7 +74,11 @@ class APIFeatures {
   }
 
   search() {
-    if (this.queryString.search) {
+    if (
+      this.queryString.search &&
+      this.queryString.search !== " " &&
+      this.queryString.search !== " "
+    ) {
       const searchTerm = this.queryString.search.trim();
       if (!isNaN(searchTerm)) {
         this.query = this.query.find({

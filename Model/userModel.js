@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
+      unique: [true, "Phone number already exsist."],
     },
     channel: {
       type: String,
@@ -73,6 +74,10 @@ const userSchema = new mongoose.Schema(
       },
     },
     wishlist: {
+      type: [String],
+      unique: [true, "Movie already exist."],
+    },
+    reviews: {
       type: [String],
       unique: [true, "Movie already exist."],
     },

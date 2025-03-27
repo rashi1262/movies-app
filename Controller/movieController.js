@@ -21,7 +21,7 @@ exports.getAllMovies = async function (req, res, next) {
     const features = new APIFeatures(Movie.find(), req.query)
       .search()
       .filter()
-      .sort()
+      .sortMovies()
       .paginate();
     const movies = await features.query;
     res.status(200).json({

@@ -8,6 +8,7 @@ const cookieParser = require("cookie-parser");
 const userRoutes = require("./Routes/userRoutes");
 const movieRoutes = require("./Routes/movieRoutes");
 const wishlistRoutes = require("./Routes/wishListRoutes");
+const reviewRoutes = require("./Routes/reviewRoutes");
 
 app.use(
   cors({
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", movieRoutes);
 app.use("/api/v1", wishlistRoutes);
+app.use("/api/v1", reviewRoutes);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
