@@ -3,6 +3,7 @@ const AppError = require("../Utils/AppError");
 const APIFeatures = require("../Utils/apiFeatures");
 const axios = require("axios");
 const fs = require("fs");
+const Review = require("../Model/reviewModel");
 
 exports.createMovie = async function (req, res, next) {
   try {
@@ -41,6 +42,7 @@ exports.getAllMovies = async function (req, res, next) {
 exports.getMovie = async function (req, res, next) {
   try {
     const movie = await Movie.findById(req.params.id);
+    const review = await Review.findOne({ movieId: req.params.id });
     if (!movie) {
       return next(new AppError("Invalid Id or Movie doesn't exist.", 404));
     }
@@ -61,6 +63,7 @@ exports.getMovie = async function (req, res, next) {
     } else {
       res.status(200).json({
         status: "success",
+        review: review,
         message: movie,
       });
     }
