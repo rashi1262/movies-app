@@ -76,10 +76,6 @@ const userSchema = new mongoose.Schema(
       type: [String],
       unique: [true, "Movie already exist."],
     },
-    reviews: {
-      type: [String],
-      unique: [true, "Movie already exist."],
-    },
   },
   { timestamps: true }
 );
