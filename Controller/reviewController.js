@@ -8,11 +8,17 @@ exports.createReview = async function (req, res, next) {
     let reviews;
     const result = await Review.findOne({ movieId });
     const { userId, name, rating, review } = req.body;
+
     if (!userId || !review || !rating || !name) {
       return next(
         new AppError("userId, review, name and rating are required.", 400)
       );
     }
+
+    if (Number(rating) > 6 || Number(rating) < 1) {
+      return next(new AppError("Rating must be between 1-5.", 400));
+    }
+
     if (!result) {
       const data = {
         movieId,
@@ -29,7 +35,7 @@ exports.createReview = async function (req, res, next) {
       const totalRating =
         result.reviews.reduce((acc, el) => acc + Number(el.rating), 0) + rating;
       const total = result.reviews.length + 1;
-      const avg = (totalRating / total).toFixed(2);
+      const avg = (totalRating / total).toFixed;
       const data = { userId, name, rating, review };
       reviews = await Review.findByIdAndUpdate(result._id, {
         $push: { reviews: data },

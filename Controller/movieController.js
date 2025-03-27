@@ -24,9 +24,12 @@ exports.getAllMovies = async function (req, res, next) {
       .sortMovies()
       .paginate();
     const movies = await features.query;
+    const result = await Movie.countDocuments({});
+    const totalPages = parseInt(result / 20);
     res.status(200).json({
       status: "success",
       totalMovies: movies.length,
+      totalPages,
       message: movies,
     });
   } catch (err) {
