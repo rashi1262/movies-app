@@ -53,13 +53,10 @@ class APIFeatures {
       if (
         sortBy === "vote_average" ||
         sortBy === "popularity" ||
-        sortBy === "vote_count" ||
-        sortBy === "-vote_average" ||
-        sortBy === "-popularity" ||
-        sortBy === "-vote_count"
+        sortBy === "vote_count"
       ) {
         console.log("enter");
-        this.query = this.query.sort(`${sortBy}`);
+        this.query = this.query.sort(`-${sortBy}`);
       }
     }
     return this;
