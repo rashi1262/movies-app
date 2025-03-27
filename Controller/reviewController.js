@@ -4,28 +4,45 @@ const User = require("../Model/userModel");
 
 exports.createReview = async function (req, res, next) {
   try {
-    const { userId, movieId, rating, comments } = req.body;
-
-    if (!userId || !movieId || !rating) {
+    const movieId = req.params.movieid;
+    let reviews;
+    const result = await Review.findOne({ movieId });
+    const { userId, name, rating, review } = req.body;
+    if (!userId || !review || !rating || !name) {
       return next(
-        new AppError("userId, movieId, and rating are required.", 400)
+        new AppError("userId, review, name and rating are required.", 400)
       );
     }
-
-    const review = await Review.create({ userId, movieId, rating, comments });
-    await User.findByIdAndUpdate(
-      review.userId,
-      {
-        $push: { reviews: review._id },
-      },
-      { upsert: true, new: true }
-    );
+    if (!result) {
+      const data = {
+        movieId,
+        reviews: {
+          userId,
+          name,
+          rating,
+          review,
+        },
+        averageRating: rating,
+      };
+      reviews = await Review.create(data);
+    } else {
+      const totalRating =
+        result.reviews.reduce((acc, el) => acc + Number(el.rating), 0) + rating;
+      const total = result.reviews.length + 1;
+      const avg = (totalRating / total).toFixed(2);
+      const data = { userId, name, rating, review };
+      reviews = await Review.findByIdAndUpdate(result._id, {
+        $push: { reviews: data },
+        averageRating: avg,
+      });
+    }
 
     res.status(201).json({
       status: "success",
-      message: review,
+      message: "Review added.",
     });
   } catch (err) {
+    console.log(err);
     if (err.name === "ValidationError") {
       return next(new AppError(err.message, 400));
     }
