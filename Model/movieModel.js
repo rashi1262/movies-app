@@ -16,6 +16,7 @@ const movieSchema = new mongoose.Schema(
     video: { type: Boolean },
     vote_average: { type: Number },
     vote_count: { type: Number },
+    votes: { type: [String] },
     belongs_to_collection: {
       id: { type: Number },
       name: { type: String },
