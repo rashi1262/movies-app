@@ -37,6 +37,7 @@ exports.getAllWishList = async (req, res, next) => {
 
     res.status(201).json({
       status: "sucesss",
+      length: list.length,
       message: list,
     });
   } catch (err) {
