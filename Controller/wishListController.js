@@ -33,7 +33,6 @@ exports.getAllWishList = async (req, res, next) => {
     }
     const { wishlist } = user;
     const list = await Movie.find({ _id: { $in: wishlist } });
-    console.log(list);
 
     res.status(201).json({
       status: "sucesss",
@@ -43,5 +42,29 @@ exports.getAllWishList = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     return next(new AppError(`${err.message}  Invalid Id`, 403));
+  }
+};
+
+exports.deleteWishlist = async (req, res, next) => {
+  try {
+    const { userID, movieID } = req.body;
+    if (!userID || !movieID) {
+      return next(new AppError("userID and movieID are required.", 404));
+    }
+
+    const user = await User.findById(userID);
+    if (!user.wishlist.includes(movieID)) {
+      return next(new AppError("Movie is not in wishlist.", 404));
+    }
+
+    user.wishlist = user.wishlist.filter((el) => el !== movieID);
+    await user.save();
+
+    res.status(200).json({
+      status: "sucessfully removed.",
+    });
+  } catch (err) {
+    console.log(err);
+    return next(new AppError(err, 403));
   }
 };
