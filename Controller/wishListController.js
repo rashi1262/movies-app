@@ -5,17 +5,26 @@ const mongoose = require("mongoose");
 exports.addToWishlist = async (req, res, next) => {
   try {
     const { userID, movieID } = req.body;
-    const result = await User.findByIdAndUpdate(
-      userID,
-      {
-        $push: { wishlist: movieID },
-      },
-      { upsert: true, new: true }
-    );
+    if (!userID || !movieID) {
+      return next(new AppError("userID and movieID are required.", 404));
+    }
+
+    const user = await User.findById(userID);
+
+    if (!user) {
+      return next(new AppError("user doesn't exist", 404));
+    }
+
+    if (user.wishlist.length === 0 || !user.wishlist.includes(movieID)) {
+      user.wishlist.push(movieID);
+    } else if (user.wishlist.includes(movieID)) {
+      user.wishlist = user.wishlist.filter((el) => el !== movieID);
+    }
+    await user.save();
 
     res.status(201).json({
       status: "sucesss",
-      message: result,
+      message: user.wishlist,
     });
   } catch (err) {
     console.log(err);
