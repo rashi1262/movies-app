@@ -34,7 +34,6 @@ exports.getAllMovies = async function (req, res, next) {
       message: movies,
     });
   } catch (err) {
-    console.log(err);
     return next(new AppError(err.message, 403));
   }
 };

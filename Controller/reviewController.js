@@ -48,7 +48,6 @@ exports.createReview = async function (req, res, next) {
       message: "Review added.",
     });
   } catch (err) {
-    console.log(err);
     if (err.name === "ValidationError") {
       return next(new AppError(err.message, 400));
     }

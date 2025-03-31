@@ -64,7 +64,6 @@ exports.deleteWishlist = async (req, res, next) => {
       status: "sucessfully removed.",
     });
   } catch (err) {
-    console.log(err);
     return next(new AppError(err, 403));
   }
 };
