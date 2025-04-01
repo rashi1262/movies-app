@@ -10,6 +10,7 @@ const movieRoutes = require("./Routes/movieRoutes");
 const wishlistRoutes = require("./Routes/wishListRoutes");
 const reviewRoutes = require("./Routes/reviewRoutes");
 const voteRoutes = require("./Routes/voteRoutes");
+const chatRoutes = require("./Routes/chatRoutes");
 
 app.use(
   cors({
@@ -29,6 +30,7 @@ app.use("/api/v1", movieRoutes);
 app.use("/api/v1", wishlistRoutes);
 app.use("/api/v1", reviewRoutes);
 app.use("/api/v1", voteRoutes);
+app.use("/api/v1", chatRoutes);
 
 app.all("*", (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
