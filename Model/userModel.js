@@ -9,6 +9,9 @@ const userSchema = new mongoose.Schema(
     phone: {
       type: String,
     },
+    email: {
+      type: String,
+    },
     channel: {
       type: String,
     },

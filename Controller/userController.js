@@ -3,8 +3,26 @@ const AppError = require("../Utils/AppError");
 
 exports.createUser = async function (req, res, next) {
   try {
+    if (req.body.phone) {
+      const user = await User.findOne({ phone: req.body.phone });
+      if (user) {
+        console.log("user exist by phone");
+        return res.status(201).json({
+          status: "success",
+          message: user,
+        });
+      }
+    } else if (req.body.email) {
+      const user = await User.findOne({ email: req.body.email });
+      if (user) {
+        console.log("user exist by email");
+        return res.status(201).json({
+          status: "success",
+          message: user,
+        });
+      }
+    }
     const user = await User.create(req.body);
-
     res.status(201).json({
       status: "success",
       message: user,
